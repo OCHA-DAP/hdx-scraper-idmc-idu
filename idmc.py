@@ -30,7 +30,6 @@ class IDMC:
         self.configuration = configuration
         self.retriever = retriever
         self.folder = folder
-        self.countries = set()
         self.events = {}
         self.countrymapping = {}
 
@@ -45,31 +44,55 @@ class IDMC:
         dataset.add_tags(tags)
         return dataset
 
-    def get_country_data(self, state):
+    def get_countriesdata(self, state):
         url = self.configuration["url"]
         json = self.retriever.download_json(url, "idmc_idu.json")
+        updated_countries = set()
+        unknown_countryisos = set()
+        high_income_countries = set()
         for event in json:
             countryiso = event["iso3"]
-            self.countrymapping[countryiso] = event["country"]
-            date = parse_date(event["created_at"])
+            countryinfo = Country.get_country_info_from_iso3(countryiso)
+            if not countryinfo:
+                unknown_countryisos.add(countryiso)
+                continue
+            countryname = event["country"]
+            income_level = countryinfo["#indicator+incomelevel"]
+            if income_level.lower() == "high":
+                high_income_countries.add(countryname)
+                continue
+            self.countrymapping[countryiso] = countryname
+            date = parse_date(event["created_at"][:10])
             if date > state.get(countryiso, state["DEFAULT"]):
                 state[countryiso] = date
-                self.countries.add(countryiso)
+                updated_countries.add(countryiso)
+        unknown_countryisos = ",".join(unknown_countryisos)
+        logger.warning(f"Ignoring unknown country isos: {unknown_countryisos}")
+        logger.info(f"Ignoring high income countries {high_income_countries}!")
+
+        for event in json:
+            countryiso = event["iso3"]
+            if countryiso in updated_countries:
                 popup = event["standard_popup_text"].replace("\n", " ")
                 match = self.regex_popup.match(popup)
                 text, link = match.groups()
-                text = multiple_replace(text, {"<br>": "", "<b>": "", "</b>": ".", "\t": " "})
+                text = multiple_replace(
+                    text, {"<br>": "", "<b>": "", "</b>": ".", "\t": " "}
+                )
                 text = re.sub(" +", " ", text)
                 event["description"] = text.replace(" .", ".").strip()
                 event["link"] = link
                 del event["standard_popup_text"]
                 del event["standard_info_text"]
+                event_type = event["type"]
+                if event_type:
+                    event["combined_type"] = event_type
+                else:
+                    event["combined_type"] = event["displacement_type"]
                 dict_of_lists_add(self.events, countryiso, event)
-        return [{"iso3": countryiso} for countryiso in sorted(self.countries)]
+        return [{"iso3": countryiso} for countryiso in sorted(self.events)]
 
-    def generate_dataset_and_showcase(self,
-        countryiso
-    ):
+    def generate_dataset_and_showcase(self, countryiso):
         name = f"idmc event data for {countryiso}"
         countryname = Country.get_country_name_from_iso3(countryiso)
         title = f"{countryname} - IDMC Event data"
@@ -82,9 +105,11 @@ class IDMC:
             dataset.add_country_location(countryiso)
         except HDXError as e:
             logger.exception(f"{countryname} has a problem! {e}")
-            return None, None, None
-
-        dataset["notes"] = "\n\n".join(self.configuration["notes"].values())
+            return None, None
+        description = self.configuration["description"]
+        dataset[
+            "notes"
+        ] = f"Conflict and disaster displacement data for {countryname}. The data is the most recent available and covers a six month time period.  \n  \n{description}"
         filename = f"event_data_{countryiso}.csv"
         resourcedata = {
             "name": name,
@@ -93,7 +118,10 @@ class IDMC:
         tags = set()
 
         def process_dates(row):
-            tags.add(row["subtype"])
+            subtype = row["subtype"]
+            if subtype is None:
+                subtype = row["displacement_type"]
+            tags.update(subtype.split("/"))
             event_startdate = parse_date(row["event_start_date"])
             displacement_startdate = parse_date(row["displacement_start_date"])
             startdate = min(event_startdate, displacement_startdate)
@@ -104,7 +132,7 @@ class IDMC:
 
         rows = self.events[countryiso]
         success, _ = dataset.generate_resource_from_iterator(
-            rows[0].keys(),
+            list(rows[0].keys()),
             rows,
             self.configuration["hxltags"],
             self.folder,
@@ -112,7 +140,10 @@ class IDMC:
             resourcedata,
             date_function=process_dates,
         )
-        tags = list(tags)
+        tags.add("hxl")
+        tags.add("displacement")
+        tags.add("internally displaced persons-idp")
+        tags = sorted(tags)
         dataset.add_tags(tags)
         internal_countryname = self.countrymapping[countryiso]
         url = f"http://www.internal-displacement.org/countries/{internal_countryname.replace(' ', '-')}/"

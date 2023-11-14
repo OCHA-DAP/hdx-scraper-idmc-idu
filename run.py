@@ -9,13 +9,11 @@ from os.path import expanduser, join
 
 from hdx.api.configuration import Configuration
 from hdx.facades.infer_arguments import facade
-from hdx.utilities.dateparse import parse_date, iso_string_from_datetime, \
-    now_utc
+from hdx.utilities.dateparse import iso_string_from_datetime, now_utc, parse_date
 from hdx.utilities.downloader import Download
 from hdx.utilities.path import progress_storing_folder, wheretostart_tempdir_batch
 from hdx.utilities.retriever import Retrieve
 from hdx.utilities.state import State
-
 from idmc import IDMC
 
 logger = logging.getLogger(__name__)
@@ -53,41 +51,30 @@ def main(save: bool = False, use_saved: bool = False) -> None:
                 batch = info["batch"]
                 configuration = Configuration.read()
                 idmc = IDMC(configuration, retriever, folder)
-                countries = idmc.get_country_data(state_dict)
+                countries = idmc.get_countriesdata(state_dict)
                 logger.info(f"Number of country datasets to upload: {len(countries)}")
 
                 for _, nextdict in progress_storing_folder(info, countries, "iso3"):
                     countryiso = nextdict["iso3"]
-                    (
-                        dataset,
-                        showcase,
-                        bites_disabled,
-                    ) = idmc.generate_dataset_and_showcase(
-                        countryiso
-                    )
+                    dataset, showcase = idmc.generate_dataset_and_showcase(countryiso)
                     if dataset:
                         dataset.update_from_yaml()
-                        dataset.generate_quickcharts(bites_disabled=bites_disabled)
                         dataset.create_in_hdx(
                             remove_additional_resources=True,
                             hxl_update=False,
                             updated_by_script="HDX Scraper: IDMC IDU",
                             batch=batch,
                         )
-                        resources = dataset.get_resources()
-                        resource_ids = [
-                            x["id"]
-                            for x in sorted(
-                                resources, key=lambda x: len(x["name"])
-                            )
-                        ]
-                        dataset.reorder_resources(resource_ids, hxl_update=False)
+                        dataset.generate_quickcharts()
+                        if showcase:
+                            showcase.create_in_hdx()
+                            showcase.add_dataset(dataset)
+        state.set(state_dict)
 
 
 if __name__ == "__main__":
     facade(
         main,
-        hdx_site="feature",
         user_agent_config_yaml=join(expanduser("~"), ".useragents.yml"),
         user_agent_lookup=lookup,
         project_config_yaml=join("config", "project_configuration.yml"),
