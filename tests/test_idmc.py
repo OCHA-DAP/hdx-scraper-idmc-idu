@@ -119,6 +119,7 @@ class TestIDMC:
     @pytest.fixture(scope="function")
     def configuration(self):
         Configuration._create(
+            hdx_read_only=True,
             user_agent="test",
             project_config_yaml=join("config", "project_configuration.yml"),
         )
