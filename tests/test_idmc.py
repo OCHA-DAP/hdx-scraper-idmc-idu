@@ -26,18 +26,31 @@ class TestIDMC:
         "groups": [{"name": "ind"}],
         "maintainer": "196196be-6037-4488-8b71-d786adf4c081",
         "name": "idmc-event-data-for-ind",
-        "notes": "Conflict and disaster displacement data for India. The data is the "
-        "most recent available and covers a six month time period.  \n"
-        "  \n"
+        "notes": "Conflict and disaster population movement (flows) data for India. "
+        "The data is the most recent available and covers a six month time "
+        "period.\n"
+        "\n"
         "Internally displaced persons are defined according to the 1998 "
         "Guiding Principles "
-        "(http://www.internal-displacement.org/publications/1998/ocha-guiding-principles-on-internal-displacement) "
+        "(https://www.internal-displacement.org/publications/ocha-guiding-principles-on-internal-displacement) "
         "as people or groups of people who have been forced or obliged to "
         "flee or to leave their homes or places of habitual residence, in "
         "particular as a result of armed conflict, or to avoid the effects "
         "of armed conflict, situations of generalized violence, violations "
         "of human rights, or natural or human-made disasters and who have "
-        "not crossed an international border.",
+        "not crossed an international border.\n"
+        "\n"
+        "The IDMC's Event data, sourced from the Internal Displacement "
+        "Updates (IDU), offers initial assessments of internal displacements "
+        "reported within the last 180 days. This dataset provides "
+        "provisional information that is continually updated on a daily "
+        "basis, reflecting the availability of data on new displacements "
+        "arising from conflicts and disasters. The finalized, carefully "
+        "curated, and validated estimates are then made accessible through "
+        "the Global Internal Displacement Database (GIDD), accessible at "
+        "https://www.internal-displacement.org/database/displacement-data. The "
+        "IDU dataset comprises preliminary estimates aggregated from various "
+        "publishers or sources.\n",
         "owner_org": "647d9d8c-4cac-4c33-b639-649aad1c2893",
         "subnational": "0",
         "tags": [
@@ -67,7 +80,7 @@ class TestIDMC:
                 "vocabulary_id": "4e61d464-4943-4e97-973a-84673c1aaa87",
             },
         ],
-        "title": "India - IDMC Event data",
+        "title": "India - IDMC Event data (Internal Displacement Updates)",
     }
     resource = {
         "description": "idmc event data for IND for India",

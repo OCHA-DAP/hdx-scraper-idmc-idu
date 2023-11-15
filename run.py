@@ -59,6 +59,9 @@ def main(save: bool = False, use_saved: bool = False) -> None:
                     dataset, showcase = idmc.generate_dataset_and_showcase(countryiso)
                     if dataset:
                         dataset.update_from_yaml()
+                        dataset["notes"] = dataset["notes"].replace(
+                            "\n", "  \n"
+                        )  # ensure markdown has line breaks
                         dataset.create_in_hdx(
                             remove_additional_resources=True,
                             hxl_update=False,
