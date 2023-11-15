@@ -33,17 +33,6 @@ class IDMC:
         self.events = {}
         self.countrymapping = {}
 
-    @staticmethod
-    def get_dataset(title, tags, name):
-        logger.info(f"Creating dataset: {title}")
-        dataset = Dataset({"name": slugify(name).lower(), "title": title})
-        dataset.set_maintainer("196196be-6037-4488-8b71-d786adf4c081")
-        dataset.set_organization("647d9d8c-4cac-4c33-b639-649aad1c2893")
-        dataset.set_expected_update_frequency("Every year")
-        dataset.set_subnational(False)
-        dataset.add_tags(tags)
-        return dataset
-
     def get_countriesdata(self, state):
         url = self.configuration["url"]
         json = self.retriever.download_json(url, "idmc_idu.json")
@@ -99,7 +88,7 @@ class IDMC:
         dataset = Dataset({"name": slugify(name).lower(), "title": title})
         dataset.set_maintainer("196196be-6037-4488-8b71-d786adf4c081")
         dataset.set_organization("647d9d8c-4cac-4c33-b639-649aad1c2893")
-        dataset.set_expected_update_frequency("Every year")
+        dataset.set_expected_update_frequency("As needed")
         dataset.set_subnational(False)
         try:
             dataset.add_country_location(countryiso)

@@ -21,7 +21,7 @@ from idmc import IDMC
 
 class TestIDMC:
     dataset = {
-        "data_update_frequency": "365",
+        "data_update_frequency": "-2",
         "dataset_date": "[2023-03-31T00:00:00 TO 2023-11-06T23:59:59]",
         "groups": [{"name": "ind"}],
         "maintainer": "196196be-6037-4488-8b71-d786adf4c081",
