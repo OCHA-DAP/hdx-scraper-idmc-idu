@@ -32,47 +32,49 @@ def main(save: bool = False, use_saved: bool = False) -> None:
         None
     """
 
-    with State(
-        "country_dates.txt",
-        State.dates_str_to_country_date_dict,
-        State.country_date_dict_to_dates_str,
-    ) as state:
-        state_dict = deepcopy(state.get())
-        with wheretostart_tempdir_batch(lookup) as info:
+    with wheretostart_tempdir_batch(lookup) as info:
+        folder = info["folder"]
+        with Download(
+            extra_params_yaml=join(expanduser("~"), ".extraparams.yml"),
+            extra_params_lookup=lookup,
+        ) as downloader:
+            retriever = Retrieve(
+                downloader, folder, "saved_data", folder, save, use_saved
+            )
             folder = info["folder"]
-            with Download(
-                extra_params_yaml=join(expanduser("~"), ".extraparams.yml"),
-                extra_params_lookup=lookup,
-            ) as downloader:
-                retriever = Retrieve(
-                    downloader, folder, "saved_data", folder, save, use_saved
-                )
-                folder = info["folder"]
-                batch = info["batch"]
-                configuration = Configuration.read()
-                idmc = IDMC(configuration, retriever, folder)
-                countries = idmc.get_countriesdata(state_dict)
-                logger.info(f"Number of country datasets to upload: {len(countries)}")
+            batch = info["batch"]
+            configuration = Configuration.read()
+            today = now_utc()
+            idmc = IDMC(configuration, retriever, today, folder)
+            idmc.get_idmc_territories()
+            countries = idmc.get_countriesdata()
+            logger.info(f"Number of country datasets to upload: {len(countries)}")
 
-                for _, nextdict in progress_storing_folder(info, countries, "iso3"):
-                    countryiso = nextdict["iso3"]
-                    dataset, showcase = idmc.generate_dataset_and_showcase(countryiso)
-                    if dataset:
-                        dataset.update_from_yaml()
-                        dataset["notes"] = dataset["notes"].replace(
-                            "\n", "  \n"
-                        )  # ensure markdown has line breaks
-                        dataset.create_in_hdx(
-                            remove_additional_resources=True,
-                            hxl_update=False,
-                            updated_by_script="HDX Scraper: IDMC IDU",
-                            batch=batch,
-                        )
+            for _, nextdict in progress_storing_folder(info, countries, "iso3"):
+                countryiso = nextdict["iso3"]
+                (
+                    dataset,
+                    showcase,
+                    show_quickcharts,
+                ) = idmc.generate_dataset_and_showcase(countryiso)
+                if dataset:
+                    dataset.update_from_yaml()
+                    dataset["notes"] = dataset["notes"].replace(
+                        "\n", "  \n"
+                    )  # ensure markdown has line breaks
+                    if show_quickcharts:
                         dataset.generate_quickcharts()
-                        if showcase:
-                            showcase.create_in_hdx()
-                            showcase.add_dataset(dataset)
-        state.set(state_dict)
+                    else:
+                        dataset.preview_off()
+                    dataset.create_in_hdx(
+                        remove_additional_resources=True,
+                        hxl_update=False,
+                        updated_by_script="HDX Scraper: IDMC IDU",
+                        batch=batch,
+                    )
+                    if showcase:
+                        showcase.create_in_hdx()
+                        showcase.add_dataset(dataset)
 
 
 if __name__ == "__main__":
