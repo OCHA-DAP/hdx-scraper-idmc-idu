@@ -113,7 +113,7 @@ class IDMC:
         dataset.set_maintainer("196196be-6037-4488-8b71-d786adf4c081")
         dataset.set_organization("647d9d8c-4cac-4c33-b639-649aad1c2893")
         dataset.set_expected_update_frequency("Every day")
-        dataset.set_reference_period(self.today - timedelta(days=180), self.today)
+        dataset.set_time_period(self.today - timedelta(days=180), self.today)
         dataset.set_subnational(False)
         try:
             dataset.add_country_location(countryiso)
