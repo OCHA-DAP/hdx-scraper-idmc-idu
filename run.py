@@ -4,7 +4,6 @@ Top level script. Calls other functions that generate datasets that this script 
 
 """
 import logging
-from copy import deepcopy
 from os.path import expanduser, join
 
 from hdx.api.configuration import Configuration
