@@ -150,6 +150,7 @@ class IDMC:
             dataset[
                 "notes"
             ] = f"**Resource has no data rows!** No conflict and disaster population movement (flows) data recorded for {countryname} in the last 180 days.\n\n{description}"
+            resourcedata["description"] += "  \n**Resource has no data rows!**"
 
         rows.insert(
             0,

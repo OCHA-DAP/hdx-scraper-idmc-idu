@@ -174,7 +174,7 @@ class TestIDMC:
 
     afg_resource = {
         "name": "idmc event data for AFG",
-        "description": "idmc event data for AFG for Afghanistan",
+        "description": "idmc event data for AFG for Afghanistan  \n**Resource has no data rows!**",
         "format": "csv",
         "resource_type": "file.upload",
         "url_type": "upload",
