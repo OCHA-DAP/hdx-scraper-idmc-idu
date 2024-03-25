@@ -95,12 +95,13 @@ class IDMC:
             countries_with_events
         )
         countries = [
-            {"iso3": countryiso} for countryiso in sorted(countries_with_events)
+            {"iso3": countryiso}
+            for countryiso in sorted(territories_not_in_countries)
         ]
         countries.extend(
             [
-                {"iso3": countryiso}
-                for countryiso in sorted(territories_not_in_countries)
+                {"iso3": countryiso} for countryiso in
+                sorted(countries_with_events)
             ]
         )
         return countries
