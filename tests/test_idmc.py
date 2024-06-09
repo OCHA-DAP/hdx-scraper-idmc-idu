@@ -32,7 +32,7 @@ class TestIDMC:
         "\n"
         "Internally displaced persons are defined according to the 1998 "
         "Guiding Principles "
-        "(https://www.internal-displacement.org/publications/ocha-guiding-principles-on-internal-displacement) "
+        "(https://www.internal-displacement.org/internal-displacement/guiding-principles-on-internal-displacement) "
         "as people or groups of people who have been forced or obliged to "
         "flee or to leave their homes or places of habitual residence, in "
         "particular as a result of armed conflict, or to avoid the effects "
@@ -80,7 +80,7 @@ class TestIDMC:
                 "vocabulary_id": "4e61d464-4943-4e97-973a-84673c1aaa87",
             },
         ],
-        "title": "India - IDMC Event data (Internal Displacement Updates)",
+        "title": "India - Internal Displacements Updates (IDU) (event data)",
     }
     ind_resource = {
         "description": "idmc event data for IND for India",
@@ -137,7 +137,7 @@ class TestIDMC:
         "\n"
         "Internally displaced persons are defined according to the 1998 "
         "Guiding Principles "
-        "(https://www.internal-displacement.org/publications/ocha-guiding-principles-on-internal-displacement) "
+        "(https://www.internal-displacement.org/internal-displacement/guiding-principles-on-internal-displacement) "
         "as people or groups of people who have been forced or obliged to "
         "flee or to leave their homes or places of habitual residence, in "
         "particular as a result of armed conflict, or to avoid the effects "
@@ -169,7 +169,7 @@ class TestIDMC:
                 "vocabulary_id": "4e61d464-4943-4e97-973a-84673c1aaa87",
             },
         ],
-        "title": "Afghanistan - IDMC Event data (Internal Displacement Updates)",
+        "title": "Afghanistan - Internal Displacements Updates (IDU) (event data)",
     }
 
     afg_resource = {
