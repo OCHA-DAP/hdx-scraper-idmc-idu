@@ -30,8 +30,8 @@ class TestIDMC:
         "The data is the most recent available and covers a 180 day time "
         "period.\n"
         "\n"
-        "Internally displaced persons are defined according to the 1998 "
-        "Guiding Principles "
+        "Internally displaced persons are defined according to [the 1998 "
+        "Guiding Principles]"
         "(https://www.internal-displacement.org/internal-displacement/guiding-principles-on-internal-displacement) "
         "as people or groups of people who have been forced or obliged to "
         "flee or to leave their homes or places of habitual residence, in "
@@ -47,8 +47,8 @@ class TestIDMC:
         "basis, reflecting the availability of data on new displacements "
         "arising from conflicts and disasters. The finalized, carefully "
         "curated, and validated estimates are then made accessible through "
-        "the Global Internal Displacement Database (GIDD), accessible at "
-        "https://www.internal-displacement.org/database/displacement-data. The "
+        "[the Global Internal Displacement Database (GIDD)]"
+        "(https://www.internal-displacement.org/database/displacement-data). The "
         "IDU dataset comprises preliminary estimates aggregated from various "
         "publishers or sources.\n",
         "owner_org": "647d9d8c-4cac-4c33-b639-649aad1c2893",
@@ -135,8 +135,8 @@ class TestIDMC:
         "movement (flows) data recorded for Afghanistan in the last 180 "
         "days.\n"
         "\n"
-        "Internally displaced persons are defined according to the 1998 "
-        "Guiding Principles "
+        "Internally displaced persons are defined according to [the 1998 "
+        "Guiding Principles]"
         "(https://www.internal-displacement.org/internal-displacement/guiding-principles-on-internal-displacement) "
         "as people or groups of people who have been forced or obliged to "
         "flee or to leave their homes or places of habitual residence, in "
@@ -152,8 +152,8 @@ class TestIDMC:
         "basis, reflecting the availability of data on new displacements "
         "arising from conflicts and disasters. The finalized, carefully "
         "curated, and validated estimates are then made accessible through "
-        "the Global Internal Displacement Database (GIDD), accessible at "
-        "https://www.internal-displacement.org/database/displacement-data. "
+        "[the Global Internal Displacement Database (GIDD)]"
+        "(https://www.internal-displacement.org/database/displacement-data). "
         "The IDU dataset comprises preliminary estimates aggregated from "
         "various publishers or sources.\n",
         "owner_org": "647d9d8c-4cac-4c33-b639-649aad1c2893",
@@ -189,7 +189,7 @@ class TestIDMC:
         Configuration._create(
             hdx_read_only=True,
             user_agent="test",
-            project_config_yaml=join("config", "project_configuration.yml"),
+            project_config_yaml=join("config", "project_configuration.yaml"),
         )
         UserAgent.set_global("test")
         Locations.set_validlocations(
