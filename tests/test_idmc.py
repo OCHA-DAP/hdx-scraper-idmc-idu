@@ -83,7 +83,7 @@ class TestIDMC:
         "title": "India - Internal Displacements Updates (IDU) (event data)",
     }
     ind_resource = {
-        "description": "idmc event data for IND for India",
+        "description": "idmc event data for India",
         "format": "csv",
         "name": "idmc event data for IND",
         "resource_type": "file.upload",
@@ -174,7 +174,7 @@ class TestIDMC:
 
     afg_resource = {
         "name": "idmc event data for AFG",
-        "description": "idmc event data for AFG for Afghanistan  \n**Resource has no data rows!**",
+        "description": "idmc event data for Afghanistan  \n**Resource has no data rows!**",
         "format": "csv",
         "resource_type": "file.upload",
         "url_type": "upload",
