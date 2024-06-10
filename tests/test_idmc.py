@@ -30,9 +30,9 @@ class TestIDMC:
         "The data is the most recent available and covers a 180 day time "
         "period.\n"
         "\n"
-        "Internally displaced persons are defined according to the 1998 "
-        "Guiding Principles "
-        "(https://www.internal-displacement.org/publications/ocha-guiding-principles-on-internal-displacement) "
+        "Internally displaced persons are defined according to [the 1998 "
+        "Guiding Principles]"
+        "(https://www.internal-displacement.org/internal-displacement/guiding-principles-on-internal-displacement) "
         "as people or groups of people who have been forced or obliged to "
         "flee or to leave their homes or places of habitual residence, in "
         "particular as a result of armed conflict, or to avoid the effects "
@@ -47,8 +47,8 @@ class TestIDMC:
         "basis, reflecting the availability of data on new displacements "
         "arising from conflicts and disasters. The finalized, carefully "
         "curated, and validated estimates are then made accessible through "
-        "the Global Internal Displacement Database (GIDD), accessible at "
-        "https://www.internal-displacement.org/database/displacement-data. The "
+        "[the Global Internal Displacement Database (GIDD)]"
+        "(https://www.internal-displacement.org/database/displacement-data). The "
         "IDU dataset comprises preliminary estimates aggregated from various "
         "publishers or sources.\n",
         "owner_org": "647d9d8c-4cac-4c33-b639-649aad1c2893",
@@ -80,10 +80,10 @@ class TestIDMC:
                 "vocabulary_id": "4e61d464-4943-4e97-973a-84673c1aaa87",
             },
         ],
-        "title": "India - IDMC Event data (Internal Displacement Updates)",
+        "title": "India - Internal Displacements Updates (IDU) (event data)",
     }
     ind_resource = {
-        "description": "idmc event data for IND for India",
+        "description": "idmc event data for India",
         "format": "csv",
         "name": "idmc event data for IND",
         "resource_type": "file.upload",
@@ -135,9 +135,9 @@ class TestIDMC:
         "movement (flows) data recorded for Afghanistan in the last 180 "
         "days.\n"
         "\n"
-        "Internally displaced persons are defined according to the 1998 "
-        "Guiding Principles "
-        "(https://www.internal-displacement.org/publications/ocha-guiding-principles-on-internal-displacement) "
+        "Internally displaced persons are defined according to [the 1998 "
+        "Guiding Principles]"
+        "(https://www.internal-displacement.org/internal-displacement/guiding-principles-on-internal-displacement) "
         "as people or groups of people who have been forced or obliged to "
         "flee or to leave their homes or places of habitual residence, in "
         "particular as a result of armed conflict, or to avoid the effects "
@@ -152,8 +152,8 @@ class TestIDMC:
         "basis, reflecting the availability of data on new displacements "
         "arising from conflicts and disasters. The finalized, carefully "
         "curated, and validated estimates are then made accessible through "
-        "the Global Internal Displacement Database (GIDD), accessible at "
-        "https://www.internal-displacement.org/database/displacement-data. "
+        "[the Global Internal Displacement Database (GIDD)]"
+        "(https://www.internal-displacement.org/database/displacement-data). "
         "The IDU dataset comprises preliminary estimates aggregated from "
         "various publishers or sources.\n",
         "owner_org": "647d9d8c-4cac-4c33-b639-649aad1c2893",
@@ -169,12 +169,12 @@ class TestIDMC:
                 "vocabulary_id": "4e61d464-4943-4e97-973a-84673c1aaa87",
             },
         ],
-        "title": "Afghanistan - IDMC Event data (Internal Displacement Updates)",
+        "title": "Afghanistan - Internal Displacements Updates (IDU) (event data)",
     }
 
     afg_resource = {
         "name": "idmc event data for AFG",
-        "description": "idmc event data for AFG for Afghanistan  \n**Resource has no data rows!**",
+        "description": "idmc event data for Afghanistan  \n**Resource has no data rows!**",
         "format": "csv",
         "resource_type": "file.upload",
         "url_type": "upload",
@@ -189,7 +189,7 @@ class TestIDMC:
         Configuration._create(
             hdx_read_only=True,
             user_agent="test",
-            project_config_yaml=join("config", "project_configuration.yml"),
+            project_config_yaml=join("config", "project_configuration.yaml"),
         )
         UserAgent.set_global("test")
         Locations.set_validlocations(

@@ -107,9 +107,10 @@ class IDMC:
         return countries
 
     def generate_dataset_and_showcase(self, countryiso):
-        name = f"idmc event data for {countryiso}"
+        prefix = "idmc event data for "
+        name = f"{prefix}{countryiso}"
         countryname = Country.get_country_name_from_iso3(countryiso)
-        title = f"{countryname} - IDMC Event data (Internal Displacement Updates)"
+        title = f"{countryname} - Internal Displacements Updates (IDU) (event data)"
         dataset = Dataset({"name": slugify(name).lower(), "title": title})
         dataset.set_maintainer("196196be-6037-4488-8b71-d786adf4c081")
         dataset.set_organization("647d9d8c-4cac-4c33-b639-649aad1c2893")
@@ -125,7 +126,7 @@ class IDMC:
         filename = f"event_data_{countryiso}.csv"
         resourcedata = {
             "name": name,
-            "description": f"{name} for {countryname}",
+            "description": f"{prefix}{countryname}",
         }
         rows = self.events.get(countryiso, [])
         tags = {"hxl", "displacement", "internally displaced persons-idp"}
