@@ -1,5 +1,5 @@
 ### Collector for IDMC's Datasets
-[![Build Status](https://github.com/OCHA-DAP/hdx-scraper-idmc-idu/actions/workflows/run-python-tests.yml/badge.svg)](https://github.com/OCHA-DAP/hdx-scraper-idmc-idu/actions/workflows/run-python-tests.yml)
+[![Build Status](https://github.com/OCHA-DAP/hdx-scraper-idmc-idu/actions/workflows/run-python-tests.yaml/badge.svg)](https://github.com/OCHA-DAP/hdx-scraper-idmc-idu/actions/workflows/run-python-tests.yaml)
 [![Coverage Status](https://coveralls.io/repos/github/OCHA-DAP/hdx-scraper-idmc-idu/badge.svg?branch=main&ts=1)](https://coveralls.io/github/OCHA-DAP/hdx-scraper-idmc-idu?branch=main)
 
 This script connects to the [IDMC API](https://api.idmcdb.org/) and extracts data from 1 endpoint country by country creating a dataset per country in HDX. It makes 1 read from IDMC and 400 read/writes (API calls) to HDX in a one hour period. It creates around 500 temporary files each a few Kb which it uploads into HDX. It is run every year.
