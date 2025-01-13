@@ -9,17 +9,15 @@ Reads IDMC HXLated csvs and creates datasets.
 import logging
 import re
 from datetime import timedelta
-from operator import itemgetter
 from os.path import join
 
 from hdx.data.dataset import Dataset
 from hdx.data.hdxobject import HDXError
 from hdx.data.showcase import Showcase
 from hdx.location.country import Country
-from hdx.utilities.dateparse import parse_date
 from hdx.utilities.dictandlist import dict_of_lists_add
 from hdx.utilities.downloader import Download, DownloadError
-from hdx.utilities.text import multiple_replace
+from hdx.utilities.matching import multiple_replace
 from slugify import slugify
 
 logger = logging.getLogger(__name__)
