@@ -39,7 +39,6 @@ def main(save: bool = False, use_saved: bool = False) -> None:
             retriever = Retrieve(
                 downloader, folder, "saved_data", folder, save, use_saved
             )
-            folder = info["folder"]
             batch = info["batch"]
             configuration = Configuration.read()
             today = now_utc()
