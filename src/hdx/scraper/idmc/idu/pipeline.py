@@ -137,7 +137,7 @@ class Pipeline:
         dataset.add_tags(tags)
         if rows:
             dataset["notes"] = (
-                f"Conflict and disaster population movement (flows) data for {countryname}. The data is the most recent available and covers a 180 day time period.\n\n{description}"
+                f"Conflict and disaster population movement (flows) data for {countryname}. \n\n{description}"
             )
             if not self.headers:
                 self.headers = list(rows[0].keys())
