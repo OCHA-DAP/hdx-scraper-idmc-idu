@@ -3,20 +3,15 @@
 Unit tests for IDMC
 
 """
+
 from os.path import join
 
-import pytest
-from hdx.api.configuration import Configuration
-from hdx.api.locations import Locations
-from hdx.data.vocabulary import Vocabulary
-from hdx.location.country import Country
+from hdx.scraper.idmc.idu.pipeline import Pipeline
 from hdx.utilities.compare import assert_files_same
 from hdx.utilities.dateparse import parse_date
 from hdx.utilities.downloader import Download
 from hdx.utilities.path import temp_dir
 from hdx.utilities.retriever import Retrieve
-from hdx.utilities.useragent import UserAgent
-from idmc import IDMC
 
 
 class TestIDMC:
@@ -92,8 +87,7 @@ class TestIDMC:
     ind_showcase = {
         "image_url": "https://www.internal-displacement.org/sites/default/files/logo_0.png",
         "name": "idmc-event-data-for-ind-showcase",
-        "notes": "Click the image to go to the IDMC summary page for the India "
-        "dataset",
+        "notes": "Click the image to go to the IDMC summary page for the India dataset",
         "tags": [
             {
                 "name": "conflict-violence",
@@ -180,56 +174,6 @@ class TestIDMC:
         "url_type": "upload",
     }
 
-    @pytest.fixture(scope="function")
-    def fixtures(self):
-        return join("tests", "fixtures")
-
-    @pytest.fixture(scope="function")
-    def configuration(self):
-        Configuration._create(
-            hdx_read_only=True,
-            user_agent="test",
-            project_config_yaml=join("config", "project_configuration.yaml"),
-        )
-        UserAgent.set_global("test")
-        Locations.set_validlocations(
-            [{"name": "afg", "title": "Afghanistan"}, {"name": "ind", "title": "India"}]
-        )
-        Country.countriesdata(use_live=False)
-        tags = (
-            "conflict-violence",
-            "cyclones-hurricanes-typhoons",
-            "displacement",
-            "flooding-storm surge",
-            "hxl",
-            "internally displaced persons-idp",
-            "natural disasters",
-        )
-        Vocabulary._tags_dict = {tag: {"Action to Take": "ok"} for tag in tags}
-        Vocabulary._tags_dict["conflict"] = {
-            "Action to Take": "merge",
-            "New Tag(s)": "conflict-violence",
-        }
-        Vocabulary._tags_dict["cyclone"] = {
-            "Action to Take": "merge",
-            "New Tag(s)": "cyclones-hurricanes-typhoons",
-        }
-        Vocabulary._tags_dict["erosion"] = {
-            "Action to Take": "merge",
-            "New Tag(s)": "natural disasters",
-        }
-        Vocabulary._tags_dict["flood"] = {
-            "Action to Take": "merge",
-            "New Tag(s)": "flooding-storm surge",
-        }
-        tags = [{"name": tag} for tag in tags]
-        Vocabulary._approved_vocabulary = {
-            "tags": tags,
-            "id": "4e61d464-4943-4e97-973a-84673c1aaa87",
-            "name": "approved",
-        }
-        return Configuration.read()
-
     def test_generate_dataset_and_showcase(self, configuration, fixtures):
         with temp_dir(
             "test_idmc", delete_on_success=True, delete_on_failure=False
@@ -238,21 +182,21 @@ class TestIDMC:
                 retriever = Retrieve(downloader, folder, fixtures, folder, False, True)
                 # indicator dataset test
                 today = parse_date("2023-11-14")
-                idmc = IDMC(configuration, retriever, today, folder)
-                idmc.get_idmc_territories()
-                countries = idmc.get_countriesdata()
+                pipeline = Pipeline(configuration, retriever, today, folder)
+                pipeline.get_idmc_territories()
+                countries = pipeline.get_countriesdata()
                 assert len(countries) == 167
 
                 (
                     dataset,
                     showcase,
                     show_quickcharts,
-                ) = idmc.generate_dataset_and_showcase("IND")
+                ) = pipeline.generate_dataset_and_showcase("IND")
                 assert dataset == self.ind_dataset
                 resources = dataset.get_resources()
                 assert resources[0] == self.ind_resource
                 file = "event_data_IND.csv"
-                assert_files_same(join("tests", "fixtures", file), join(folder, file))
+                assert_files_same(join(fixtures, file), join(folder, file))
                 assert showcase == self.ind_showcase
                 assert show_quickcharts is True
 
@@ -260,11 +204,11 @@ class TestIDMC:
                     dataset,
                     showcase,
                     show_quickcharts,
-                ) = idmc.generate_dataset_and_showcase("AFG")
+                ) = pipeline.generate_dataset_and_showcase("AFG")
                 assert dataset == self.afg_dataset
                 resources = dataset.get_resources()
                 assert resources[0] == self.afg_resource
                 file = "event_data_AFG.csv"
-                assert_files_same(join("tests", "fixtures", file), join(folder, file))
+                assert_files_same(join(fixtures, file), join(folder, file))
                 assert showcase is None
                 assert show_quickcharts is False

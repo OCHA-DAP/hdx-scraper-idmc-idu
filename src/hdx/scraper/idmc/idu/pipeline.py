@@ -6,10 +6,13 @@ IDMC:
 Reads IDMC HXLated csvs and creates datasets.
 
 """
+
 import logging
 import re
 from datetime import timedelta
 from os.path import join
+
+from slugify import slugify
 
 from hdx.data.dataset import Dataset
 from hdx.data.hdxobject import HDXError
@@ -18,12 +21,12 @@ from hdx.location.country import Country
 from hdx.utilities.dictandlist import dict_of_lists_add
 from hdx.utilities.downloader import Download, DownloadError
 from hdx.utilities.matching import multiple_replace
-from slugify import slugify
+from hdx.utilities.path import script_dir_plus_file
 
 logger = logging.getLogger(__name__)
 
 
-class IDMC:
+class Pipeline:
     regex_popup = re.compile(r"(.*)<a href=\\?\"(.*)\\?\"target")
 
     def __init__(self, configuration, retriever, today, folder):
@@ -38,7 +41,8 @@ class IDMC:
 
     def get_idmc_territories(self):
         headers, iterator = self.retriever.downloader.get_tabular_rows(
-            join("config", "IDMC_territories.csv"), dict_form=True
+            script_dir_plus_file(join("config", "IDMC_territories.csv"), Pipeline),
+            dict_form=True,
         )
         unknown_countryisos = set()
         high_income_countries = set()
@@ -93,14 +97,10 @@ class IDMC:
             countries_with_events
         )
         countries = [
-            {"iso3": countryiso}
-            for countryiso in sorted(territories_not_in_countries)
+            {"iso3": countryiso} for countryiso in sorted(territories_not_in_countries)
         ]
         countries.extend(
-            [
-                {"iso3": countryiso} for countryiso in
-                sorted(countries_with_events)
-            ]
+            [{"iso3": countryiso} for countryiso in sorted(countries_with_events)]
         )
         return countries
 
@@ -136,9 +136,9 @@ class IDMC:
         tags = sorted(tags)
         dataset.add_tags(tags)
         if rows:
-            dataset[
-                "notes"
-            ] = f"Conflict and disaster population movement (flows) data for {countryname}. The data is the most recent available and covers a 180 day time period.\n\n{description}"
+            dataset["notes"] = (
+                f"Conflict and disaster population movement (flows) data for {countryname}. The data is the most recent available and covers a 180 day time period.\n\n{description}"
+            )
             if not self.headers:
                 self.headers = list(rows[0].keys())
         else:
@@ -147,9 +147,9 @@ class IDMC:
                     f"Headers not populated. Cannot update {countryname} that has no events!"
                 )
                 return None, None, False
-            dataset[
-                "notes"
-            ] = f"**Resource has no data rows!** No conflict and disaster population movement (flows) data recorded for {countryname} in the last 180 days.\n\n{description}"
+            dataset["notes"] = (
+                f"**Resource has no data rows!** No conflict and disaster population movement (flows) data recorded for {countryname} in the last 180 days.\n\n{description}"
+            )
             resourcedata["description"] += "  \n**Resource has no data rows!**"
 
         rows.insert(
