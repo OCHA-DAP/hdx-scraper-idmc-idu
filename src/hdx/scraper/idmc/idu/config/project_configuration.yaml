@@ -1,0 +1,31 @@
+# Collector specific configuration
+url: "https://helix-tools-api.idmcdb.org/external-api/idus/last-180-days/"
+hxltags:
+  "country": "#country+name"
+  "iso3": "#country+iso3"
+  "latitude": "#geo+lat"
+  "longitude": "#geo+lon"
+  "displacement_type": "#event+displacement_type"
+  "qualifier": "#total"
+  "figure": "#affected+displaced"
+  "displacement_date": "#date+displacement"
+  "displacement_start_date": "#date+displacement+start"
+  "displacement_end_date": "#date+displacement+end"
+  "year": "#date+year"
+  "event_name": "#event+name"
+  "event_start_date": "#date+event+start"
+  "event_end_date": "#date+event+end"
+  "type": "#event+type"
+  "subtype": "#event+subtype"
+  "created_at": "#date+created"
+  "description": "#description"
+  "link": "#meta+url"
+  "combined_type": "#cause"
+description: |
+  The **IDU (Internal Displacement Updates) dataset**, provided by the [Internal Displacement Monitoring Centre (IDMC)](https://www.internal-displacement.org/), offers timely event data and provisional information on new internal displacements caused by conflicts and disasters. Representing the most recent available information over a 180-day time period, the IDU is updated daily and focuses on "flows" (new displacements).
+
+  Internally displaced persons (IDPs) are defined according to the [1998 Guiding Principles](https://www.internal-displacement.org/internal-displacement/guiding-principles-on-internal-displacement/) as people or groups of people who have been forced or obliged to flee or to leave their homes or places of habitual residence, in particular as a result of armed conflict, or to avoid the effects of armed conflict, situations of generalized violence, violations of human rights, or natural or human-made disasters and who have not crossed an international border. The IDMC's event data, sourced from the IDU, provides initial assessments of these internal displacements, reflecting continually updated provisional information from various sources.
+
+  While the IDU offers early insights, the more thoroughly validated and curated "stock"  (Total number of people leaving on internal displacement) and "flow" (population movements) estimates are available in the annual [Global Internal Displacement Database (GIDD)](http://www.internal-displacement.org/database/displacement-data). Both datasets are accessible via API, with specific guidance on data access, structure, and limitations, including important preprocessing considerations for the IDU to ensure accurate analysis and avoid double-counting. For further detailed information and complete API specifications, users are encouraged to consult the official documentation at https://www.internal-displacement.org/database/api-documentation/.
+
+  The IDMC's Event data, sourced from the Internal Displacement Updates (IDU), offers initial assessments of internal displacements reported within the last 180 days. This dataset provides provisional information that is continually updated on a daily basis, reflecting the availability of data on new displacements arising from conflicts and disasters. The finalized, carefully curated, and validated estimates are then made accessible through [the Global Internal Displacement Database (GIDD)](https://www.internal-displacement.org/database/displacement-data). The IDU dataset comprises preliminary estimates aggregated from various publishers or sources.

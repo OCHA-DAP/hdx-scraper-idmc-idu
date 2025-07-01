@@ -1,15 +1,9 @@
 [run]
-source = .
+source = src
+
+omit = */_version.py
 
 [report]
-omit =
-    */run.py
-    */python?.?/*
-    */venv/*
-    */site-packages/*
-    */tests/*
-    *__init__*
-
 exclude_also =
     from ._version
     def __repr__
