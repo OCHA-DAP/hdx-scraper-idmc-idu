@@ -5,6 +5,7 @@ Top level script. Calls other functions that generate datasets that this script 
 """
 
 import logging
+from os import getenv
 from os.path import expanduser, join
 
 from hdx.api.configuration import Configuration
@@ -44,7 +45,13 @@ def main(save: bool = False, use_saved: bool = False) -> None:
     )
     with wheretostart_tempdir_batch(lookup) as info:
         folder = info["folder"]
+        idmc_key = getenv("IDMC_KEY")
+        if idmc_key:
+            extra_params_dict = {"client_id": idmc_key}
+        else:
+            extra_params_dict = None
         with Download(
+            extra_params_dict=extra_params_dict,
             extra_params_yaml=join(expanduser("~"), ".extraparams.yaml"),
             extra_params_lookup=lookup,
         ) as downloader:
