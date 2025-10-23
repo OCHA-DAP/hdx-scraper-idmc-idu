@@ -103,8 +103,6 @@ class TestIDMC:
         "description": "idmc event data for India",
         "format": "csv",
         "name": "idmc event data for IND",
-        "resource_type": "file.upload",
-        "url_type": "upload",
     }
     ind_showcase = {
         "image_url": "https://www.internal-displacement.org/sites/default/files/logo_0.png",
@@ -216,8 +214,6 @@ class TestIDMC:
         "name": "idmc event data for AFG",
         "description": "idmc event data for Afghanistan  \n**Resource has no data rows!**",
         "format": "csv",
-        "resource_type": "file.upload",
-        "url_type": "upload",
     }
 
     def test_generate_dataset_and_showcase(self, configuration, fixtures):
