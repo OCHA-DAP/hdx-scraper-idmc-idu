@@ -77,7 +77,11 @@ class Pipeline:
                 continue
             popup = event["standard_popup_text"].replace("\n", " ")
             match = self.regex_popup.match(popup)
-            text, link = match.groups()
+            if match:
+                text, link = match.groups()
+            else:
+                text = popup
+                link = None
             text = multiple_replace(
                 text, {"<br>": "", "<b>": "", "</b>": ".", "\t": " "}
             )
@@ -119,7 +123,7 @@ class Pipeline:
             dataset.add_country_location(countryiso)
         except HDXError as e:
             logger.exception(f"{countryname} has a problem! {e}")
-            return None, None, False
+            return None, None
         description = self.configuration["description"]
         filename = f"event_data_{countryiso}.csv"
         resourcedata = {
@@ -146,7 +150,7 @@ class Pipeline:
                 logger.error(
                     f"Headers not populated. Cannot update {countryname} that has no events!"
                 )
-                return None, None, False
+                return None, None
             dataset["notes"] = (
                 f"**Resource has no data rows!** No conflict and disaster population movement (flows) data recorded for {countryname} in the last 180 days.\n\n{description}"
             )
@@ -158,7 +162,7 @@ class Pipeline:
                 self.headers, self.configuration["hxltags"], dict_form=True
             ),
         )
-        dataset.generate_resource_from_rows(
+        dataset.generate_resource(
             self.folder,
             filename,
             rows,
@@ -167,13 +171,13 @@ class Pipeline:
         )
         internal_countryname = self.countrymapping.get(countryiso)
         if not internal_countryname:
-            return dataset, None, False
+            return dataset, None
 
         url = f"http://www.internal-displacement.org/countries/{internal_countryname.replace(' ', '-')}/"
         try:
             self.retriever.downloader.setup(url)
         except DownloadError:
-            return dataset, None, True
+            return dataset, None
         showcase = Showcase(
             {
                 "name": f"{dataset['name']}-showcase",
@@ -184,4 +188,4 @@ class Pipeline:
             }
         )
         showcase.add_tags(tags)
-        return dataset, showcase, True
+        return dataset, showcase
