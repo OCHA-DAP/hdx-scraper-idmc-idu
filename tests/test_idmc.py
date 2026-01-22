@@ -232,7 +232,6 @@ class TestIDMC:
                 (
                     dataset,
                     showcase,
-                    show_quickcharts,
                 ) = pipeline.generate_dataset_and_showcase("IND")
                 assert dataset == self.ind_dataset
                 resources = dataset.get_resources()
@@ -240,12 +239,10 @@ class TestIDMC:
                 file = "event_data_IND.csv"
                 assert_files_same(join(fixtures, file), join(folder, file))
                 assert showcase == self.ind_showcase
-                assert show_quickcharts is True
 
                 (
                     dataset,
                     showcase,
-                    show_quickcharts,
                 ) = pipeline.generate_dataset_and_showcase("AFG")
                 assert dataset == self.afg_dataset
                 resources = dataset.get_resources()
@@ -253,4 +250,3 @@ class TestIDMC:
                 file = "event_data_AFG.csv"
                 assert_files_same(join(fixtures, file), join(folder, file))
                 assert showcase is None
-                assert show_quickcharts is False
