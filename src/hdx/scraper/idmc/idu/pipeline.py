@@ -3,7 +3,7 @@
 IDMC:
 ------------
 
-Reads IDMC HXLated csvs and creates datasets.
+Reads IDMC csvs and creates datasets.
 
 """
 
@@ -19,7 +19,7 @@ from hdx.data.hdxobject import HDXError
 from hdx.data.showcase import Showcase
 from hdx.location.country import Country
 from hdx.utilities.dictandlist import dict_of_lists_add
-from hdx.utilities.downloader import Download, DownloadError
+from hdx.utilities.downloader import DownloadError
 from hdx.utilities.matching import multiple_replace
 from hdx.utilities.path import script_dir_plus_file
 
@@ -131,7 +131,7 @@ class Pipeline:
             "description": f"{prefix}{countryname}",
         }
         rows = self.events.get(countryiso, [])
-        tags = {"hxl", "displacement", "internally displaced persons-idp"}
+        tags = {"displacement", "internally displaced persons-idp"}
         for row in rows:
             subtype = row["subtype"]
             if subtype is None:
@@ -156,18 +156,13 @@ class Pipeline:
             )
             resourcedata["description"] += "  \n**Resource has no data rows!**"
 
-        rows.insert(
-            0,
-            Download.hxl_row(
-                self.headers, self.configuration["hxltags"], dict_form=True
-            ),
-        )
         dataset.generate_resource(
             self.folder,
             filename,
             rows,
             resourcedata,
             headers=self.headers,
+            no_empty=False,
         )
         internal_countryname = self.countrymapping.get(countryiso)
         if not internal_countryname:
