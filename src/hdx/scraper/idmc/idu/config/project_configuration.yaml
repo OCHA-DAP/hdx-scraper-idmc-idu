@@ -1,26 +1,33 @@
 # Collector specific configuration
 url: "https://helix-tools-api.idmcdb.org/external-api/idus/last-180-days/"
-hxltags:
-  "country": "#country+name"
-  "iso3": "#country+iso3"
-  "latitude": "#geo+lat"
-  "longitude": "#geo+lon"
-  "displacement_type": "#event+displacement_type"
-  "qualifier": "#total"
-  "figure": "#affected+displaced"
-  "displacement_date": "#date+displacement"
-  "displacement_start_date": "#date+displacement+start"
-  "displacement_end_date": "#date+displacement+end"
-  "year": "#date+year"
-  "event_name": "#event+name"
-  "event_start_date": "#date+event+start"
-  "event_end_date": "#date+event+end"
-  "type": "#event+type"
-  "subtype": "#event+subtype"
-  "created_at": "#date+created"
-  "description": "#description"
-  "link": "#meta+url"
-  "combined_type": "#cause"
+
+headers:
+  - id
+  - country
+  - iso3
+  - latitude
+  - longitude
+  - centroid
+  - displacement_type
+  - qualifier
+  - figure
+  - displacement_date
+  - displacement_start_date
+  - displacement_end_date
+  - year
+  - event_name
+  - event_start_date
+  - event_end_date
+  - category
+  - subcategory
+  - type
+  - subtype
+  - old_id
+  - created_at
+  - description
+  - link
+  - combined_type
+
 description: |
   The **IDU (Internal Displacement Updates) dataset**, provided by the [Internal Displacement Monitoring Centre (IDMC)](https://www.internal-displacement.org/), offers timely event data and provisional information on new internal displacements caused by conflicts and disasters. Representing the most recent available information over a 180-day time period, the IDU is updated daily and focuses on "flows" (new displacements).
 

@@ -91,7 +91,6 @@ class TestIDMC:
                 "name": "displacement",
                 "vocabulary_id": "4e61d464-4943-4e97-973a-84673c1aaa87",
             },
-            {"name": "hxl", "vocabulary_id": "4e61d464-4943-4e97-973a-84673c1aaa87"},
             {
                 "name": "internally displaced persons-idp",
                 "vocabulary_id": "4e61d464-4943-4e97-973a-84673c1aaa87",
@@ -129,7 +128,6 @@ class TestIDMC:
                 "name": "displacement",
                 "vocabulary_id": "4e61d464-4943-4e97-973a-84673c1aaa87",
             },
-            {"name": "hxl", "vocabulary_id": "4e61d464-4943-4e97-973a-84673c1aaa87"},
             {
                 "name": "internally displaced persons-idp",
                 "vocabulary_id": "4e61d464-4943-4e97-973a-84673c1aaa87",
@@ -201,7 +199,6 @@ class TestIDMC:
                 "name": "displacement",
                 "vocabulary_id": "4e61d464-4943-4e97-973a-84673c1aaa87",
             },
-            {"name": "hxl", "vocabulary_id": "4e61d464-4943-4e97-973a-84673c1aaa87"},
             {
                 "name": "internally displaced persons-idp",
                 "vocabulary_id": "4e61d464-4943-4e97-973a-84673c1aaa87",

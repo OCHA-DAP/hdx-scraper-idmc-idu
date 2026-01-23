@@ -35,7 +35,6 @@ def configuration():
         "cyclones-hurricanes-typhoons",
         "displacement",
         "flooding-storm surge",
-        "hxl",
         "internally displaced persons-idp",
         "natural disasters",
     )
