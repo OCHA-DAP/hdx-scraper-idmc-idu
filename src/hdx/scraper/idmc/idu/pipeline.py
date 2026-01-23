@@ -37,7 +37,7 @@ class Pipeline:
         self.events = {}
         self.countrymapping = {}
         self.idmc_territories = set()
-        self.headers = None
+        self.headers = configuration["headers"]
 
     def get_idmc_territories(self):
         headers, iterator = self.retriever.downloader.get_tabular_rows(
