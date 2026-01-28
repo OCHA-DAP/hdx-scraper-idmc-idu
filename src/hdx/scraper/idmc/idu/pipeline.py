@@ -37,7 +37,7 @@ class Pipeline:
         self.events = {}
         self.countrymapping = {}
         self.idmc_territories = set()
-        self.headers = configuration["headers"]
+        self.headers = None
 
     def get_idmc_territories(self):
         headers, iterator = self.retriever.downloader.get_tabular_rows(
@@ -97,6 +97,13 @@ class Pipeline:
                 event["combined_type"] = event["displacement_type"]
             dict_of_lists_add(self.events, countryiso, event)
         countries_with_events = set(self.events)
+        if len(countries_with_events) == 0:
+            raise ValueError(
+                "No countries with events in last 180 days which is highly improbable!"
+            )
+        first_list = next(iter(self.events.values()))
+        self.headers = list(first_list[0].keys())
+
         territories_not_in_countries = self.idmc_territories.difference(
             countries_with_events
         )
@@ -112,6 +119,11 @@ class Pipeline:
         prefix = "idmc event data for "
         name = f"{prefix}{countryiso}"
         countryname = Country.get_country_name_from_iso3(countryiso)
+        if not self.headers:
+            logger.error(
+                f"Headers not populated. Cannot update {countryname} that has no events!"
+            )
+            return None, None
         title = f"{countryname} - Internal Displacements Updates (IDU) (event data)"
         dataset = Dataset({"name": slugify(name).lower(), "title": title})
         dataset.set_maintainer("196196be-6037-4488-8b71-d786adf4c081")
@@ -143,14 +155,7 @@ class Pipeline:
             dataset["notes"] = (
                 f"Conflict and disaster population movement (flows) data for {countryname}. \n\n{description}"
             )
-            if not self.headers:
-                self.headers = list(rows[0].keys())
         else:
-            if not self.headers:
-                logger.error(
-                    f"Headers not populated. Cannot update {countryname} that has no events!"
-                )
-                return None, None
             dataset["notes"] = (
                 f"**Resource has no data rows!** No conflict and disaster population movement (flows) data recorded for {countryname} in the last 180 days.\n\n{description}"
             )
