@@ -53,7 +53,7 @@ class Pipeline:
                 unknown_countryisos.add(countryiso)
                 continue
             countryname = row["idmc_short_name"]
-            income_level = countryinfo["#indicator+incomelevel"]
+            income_level = countryinfo["World Bank Income Level"]
             if income_level.lower() == "high":
                 high_income_countries.add(countryname)
                 continue
