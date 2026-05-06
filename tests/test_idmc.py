@@ -6,12 +6,13 @@ Unit tests for IDMC
 
 from os.path import join
 
-from hdx.scraper.idmc.idu.pipeline import Pipeline
 from hdx.utilities.compare import assert_files_same
 from hdx.utilities.dateparse import parse_date
 from hdx.utilities.downloader import Download
 from hdx.utilities.path import temp_dir
 from hdx.utilities.retriever import Retrieve
+
+from hdx.scraper.idmc.idu.pipeline import Pipeline
 
 
 class TestIDMC:

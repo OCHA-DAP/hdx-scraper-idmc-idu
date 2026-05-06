@@ -11,8 +11,6 @@ from os.path import expanduser, join
 from hdx.api.configuration import Configuration
 from hdx.data.user import User
 from hdx.facades.infer_arguments import facade
-from hdx.scraper.idmc.idu._version import __version__
-from hdx.scraper.idmc.idu.pipeline import Pipeline
 from hdx.utilities.dateparse import now_utc
 from hdx.utilities.downloader import Download
 from hdx.utilities.path import (
@@ -21,6 +19,9 @@ from hdx.utilities.path import (
     wheretostart_tempdir_batch,
 )
 from hdx.utilities.retriever import Retrieve
+
+from hdx.scraper.idmc.idu._version import __version__
+from hdx.scraper.idmc.idu.pipeline import Pipeline
 
 logger = logging.getLogger(__name__)
 

@@ -12,8 +12,6 @@ import re
 from datetime import timedelta
 from os.path import join
 
-from slugify import slugify
-
 from hdx.data.dataset import Dataset
 from hdx.data.hdxobject import HDXError
 from hdx.data.showcase import Showcase
@@ -22,6 +20,7 @@ from hdx.utilities.dictandlist import dict_of_lists_add
 from hdx.utilities.downloader import DownloadError
 from hdx.utilities.matching import multiple_replace
 from hdx.utilities.path import script_dir_plus_file
+from slugify import slugify
 
 logger = logging.getLogger(__name__)
 
