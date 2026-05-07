@@ -9,6 +9,7 @@ from os import getenv
 from os.path import expanduser, join
 
 from hdx.api.configuration import Configuration
+from hdx.data.dataset import Dataset
 from hdx.data.user import User
 from hdx.facades.infer_arguments import facade
 from hdx.utilities.dateparse import now_utc
@@ -65,35 +66,50 @@ def main(save: bool = False, use_saved: bool = False) -> None:
             pipeline.get_idmc_territories()
             countries = pipeline.get_countriesdata()
             logger.info(f"Number of country datasets to upload: {len(countries)}")
+            deleted = 0
 
             for _, nextdict in progress_storing_folder(info, countries, "iso3"):
                 countryiso = nextdict["iso3"]
                 (
                     dataset,
                     showcase,
+                    populated,
                 ) = pipeline.generate_dataset_and_showcase(countryiso)
                 if dataset:
-                    dataset.update_from_yaml(
-                        script_dir_plus_file(
-                            join("config", "hdx_dataset_static.yaml"), main
+                    if populated:
+                        dataset.update_from_yaml(
+                            script_dir_plus_file(
+                                join("config", "hdx_dataset_static.yaml"), main
+                            )
                         )
-                    )
-                    dataset["notes"] = dataset["notes"].replace(
-                        "\n", "  \n"
-                    )  # ensure markdown has line breaks
-                    dataset.create_in_hdx(
-                        remove_additional_resources=True,
-                        updated_by_script="HDX Scraper: IDMC IDU",
-                        batch=batch,
-                    )
-                    if showcase:
-                        showcase.create_in_hdx()
-                        showcase.add_dataset(dataset)
+                        dataset["notes"] = dataset["notes"].replace(
+                            "\n", "  \n"
+                        )  # ensure markdown has line breaks
+                        logger.info(f"Updating {dataset['name']}")
+                        dataset.create_in_hdx(
+                            remove_additional_resources=True,
+                            updated_by_script="HDX Scraper: IDMC IDU",
+                            batch=batch,
+                        )
+                        if showcase:
+                            showcase.create_in_hdx()
+                            showcase.add_dataset(dataset)
+                    else:
+                        dataset = Dataset.read_from_hdx(dataset["name"])
+                        if dataset:
+                            for showcase in dataset.get_showcases():
+                                logger.info(f"Showcase {showcase['name']} deleted")
+                                showcase.delete_from_hdx()
+                            logger.info(f"Dataset {dataset['name']} deleted")
+                            deleted += 1
+                            dataset.delete_from_hdx()
+            logger.info(f"{deleted} datasets deleted")
 
 
 if __name__ == "__main__":
     facade(
         main,
+        hdx_site="feature",
         user_agent_config_yaml=join(expanduser("~"), ".useragents.yaml"),
         user_agent_lookup=lookup,
         project_config_yaml=script_dir_plus_file(

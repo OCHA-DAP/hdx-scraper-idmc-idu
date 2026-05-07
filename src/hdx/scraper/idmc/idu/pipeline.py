@@ -9,7 +9,6 @@ Reads IDMC csvs and creates datasets.
 
 import logging
 import re
-from datetime import timedelta
 from os.path import join
 
 from hdx.data.dataset import Dataset
@@ -34,7 +33,9 @@ class Pipeline:
         self.today = today
         self.folder = folder
         self.events = {}
-        self.countrymapping = {}
+        self.countrynamemapping = {}
+        self.countrystartdate = {}
+        self.countryenddate = {}
         self.idmc_territories = set()
         self.headers = None
 
@@ -64,15 +65,35 @@ class Pipeline:
     def get_countriesdata(self):
         url = self.configuration["url"]
         json = self.retriever.download_json(url, "idmc_idu.json")
+        min_date = f"{self.today.year - 1}-01-01"
         for event in json:
             countryiso = event["iso3"]
             if countryiso not in self.idmc_territories:
                 continue
-            self.countrymapping[countryiso] = event["country"]
+            end_date = event["displacement_end_date"]
+            if end_date < min_date:
+                continue
+            start_date = event["displacement_start_date"]
+            min_start_date = self.countrystartdate.get(countryiso)
+            if min_start_date:
+                if start_date < min_start_date:
+                    self.countrystartdate[countryiso] = start_date
+            else:
+                self.countrystartdate[countryiso] = start_date
+            max_end_date = self.countryenddate.get(countryiso)
+            if max_end_date:
+                if end_date > max_end_date:
+                    self.countryenddate[countryiso] = end_date
+            else:
+                self.countryenddate[countryiso] = end_date
+            self.countrynamemapping[countryiso] = event["country"]
 
         for event in json:
             countryiso = event["iso3"]
-            if countryiso not in self.countrymapping:
+            if countryiso not in self.countrynamemapping:
+                continue
+            end_date = event["displacement_end_date"]
+            if end_date < min_date:
                 continue
             popup = event["standard_popup_text"].replace("\n", " ")
             match = self.regex_popup.match(popup)
@@ -98,50 +119,41 @@ class Pipeline:
         countries_with_events = set(self.events)
         if len(countries_with_events) == 0:
             raise ValueError(
-                "No countries with events in last 180 days which is highly improbable!"
+                f"No countries with events since {min_date} which is highly improbable!"
             )
         first_list = next(iter(self.events.values()))
         self.headers = list(first_list[0].keys())
 
-        territories_not_in_countries = self.idmc_territories.difference(
-            countries_with_events
-        )
-        countries = [
-            {"iso3": countryiso} for countryiso in sorted(territories_not_in_countries)
-        ]
-        countries.extend(
-            [{"iso3": countryiso} for countryiso in sorted(countries_with_events)]
-        )
-        return countries
+        return [{"iso3": countryiso} for countryiso in sorted(self.idmc_territories)]
 
     def generate_dataset_and_showcase(self, countryiso):
         prefix = "idmc event data for "
         name = f"{prefix}{countryiso}"
         countryname = Country.get_country_name_from_iso3(countryiso)
-        if not self.headers:
-            logger.error(
-                f"Headers not populated. Cannot update {countryname} that has no events!"
-            )
-            return None, None
         title = f"{countryname} - Internal Displacements Updates (IDU) (event data)"
-        dataset = Dataset({"name": slugify(name).lower(), "title": title})
-        dataset.set_maintainer("196196be-6037-4488-8b71-d786adf4c081")
-        dataset.set_organization("647d9d8c-4cac-4c33-b639-649aad1c2893")
-        dataset.set_expected_update_frequency("Every day")
-        dataset.set_time_period(self.today - timedelta(days=180), self.today)
-        dataset.set_subnational(False)
+        dataset_name = slugify(name).lower()
+        dataset = Dataset({"name": dataset_name, "title": title})
         try:
             dataset.add_country_location(countryiso)
         except HDXError as e:
             logger.exception(f"{countryname} has a problem! {e}")
-            return None, None
-        description = self.configuration["description"]
+            return None, None, False
+        if countryiso not in self.countrynamemapping:
+            return dataset, None, False
+        dataset.set_maintainer("196196be-6037-4488-8b71-d786adf4c081")
+        dataset.set_organization("647d9d8c-4cac-4c33-b639-649aad1c2893")
+        dataset.set_expected_update_frequency("As needed")
+        dataset.set_time_period(
+            self.countrystartdate[countryiso], self.countryenddate[countryiso]
+        )
+        dataset.set_subnational(False)
+        description = self.configuration["description"].format(self.today.year - 1)
         filename = f"event_data_{countryiso}.csv"
         resourcedata = {
             "name": name,
             "description": f"{prefix}{countryname}",
         }
-        rows = self.events.get(countryiso, [])
+        rows = self.events[countryiso]
         tags = {"displacement", "internally displaced persons-idp"}
         for row in rows:
             subtype = row["subtype"]
@@ -150,15 +162,9 @@ class Pipeline:
             tags.update(subtype.split("/"))
         tags = sorted(tags)
         dataset.add_tags(tags)
-        if rows:
-            dataset["notes"] = (
-                f"Conflict and disaster population movement (flows) data for {countryname}. \n\n{description}"
-            )
-        else:
-            dataset["notes"] = (
-                f"**Resource has no data rows!** No conflict and disaster population movement (flows) data recorded for {countryname} in the last 180 days.\n\n{description}"
-            )
-            resourcedata["description"] += "  \n**Resource has no data rows!**"
+        dataset["notes"] = (
+            f"Conflict and disaster population movement (flows) data for {countryname}. \n\n{description}"
+        )
 
         dataset.generate_resource(
             self.folder,
@@ -168,18 +174,18 @@ class Pipeline:
             headers=self.headers,
             no_empty=False,
         )
-        internal_countryname = self.countrymapping.get(countryiso)
+        internal_countryname = self.countrynamemapping.get(countryiso)
         if not internal_countryname:
-            return dataset, None
+            return dataset, None, True
 
         url = f"http://www.internal-displacement.org/countries/{internal_countryname.replace(' ', '-')}/"
         try:
             self.retriever.downloader.setup(url)
         except DownloadError:
-            return dataset, None
+            return dataset, None, True
         showcase = Showcase(
             {
-                "name": f"{dataset['name']}-showcase",
+                "name": f"{dataset_name}-showcase",
                 "title": f"IDMC {countryname} Summary Page",
                 "notes": f"Click the image to go to the IDMC summary page for the {countryname} dataset",
                 "url": url,
@@ -187,4 +193,4 @@ class Pipeline:
             }
         )
         showcase.add_tags(tags)
-        return dataset, showcase
+        return dataset, showcase, True
