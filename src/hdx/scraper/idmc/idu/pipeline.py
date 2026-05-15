@@ -127,12 +127,11 @@ class Pipeline:
         return [{"iso3": countryiso} for countryiso in sorted(self.idmc_territories)]
 
     def generate_dataset_and_showcase(self, countryiso):
-        prefix = "idmc event data for "
-        name = f"{prefix}{countryiso}"
+        name = f"{countryiso}-idmc idu events"
         countryname = Country.get_country_name_from_iso3(countryiso)
-        title = f"{countryname} - Internal Displacements Updates (IDU) (event data)"
-        dataset_name = slugify(name).lower()
-        dataset = Dataset({"name": dataset_name, "title": title})
+        title = f"{countryname} - Internal Displacements Updates (IDU)"
+        name = slugify(name).lower()
+        dataset = Dataset({"name": name, "title": title})
         try:
             dataset.add_country_location(countryiso)
         except HDXError as e:
@@ -148,10 +147,11 @@ class Pipeline:
         )
         dataset.set_subnational(False)
         description = self.configuration["description"].format(self.today.year - 1)
-        filename = f"event_data_{countryiso}.csv"
+        filename = name.replace("-", "_")
+        filename = f"{filename}.csv"
         resourcedata = {
-            "name": name,
-            "description": f"{prefix}{countryname}",
+            "name": filename,
+            "description": f"{title}. Contains events data.",
         }
         rows = self.events[countryiso]
         tags = {"displacement", "internally displaced persons-idp"}
@@ -185,11 +185,11 @@ class Pipeline:
             return dataset, None, True
         showcase = Showcase(
             {
-                "name": f"{dataset_name}-showcase",
+                "name": f"{name}-showcase",
                 "title": f"IDMC {countryname} Summary Page",
                 "notes": f"Click the image to go to the IDMC summary page for the {countryname} dataset",
                 "url": url,
-                "image_url": "https://www.internal-displacement.org/sites/default/files/logo_0.png",
+                "image_url": "https://data.humdata.org/image/2018-09-07-094411.837093idmc-blue.png",
             }
         )
         showcase.add_tags(tags)

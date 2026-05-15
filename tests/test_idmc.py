@@ -21,7 +21,7 @@ class TestIDMC:
         "dataset_date": "[2023-03-31T00:00:00 TO 2023-11-06T23:59:59]",
         "groups": [{"name": "ind"}],
         "maintainer": "196196be-6037-4488-8b71-d786adf4c081",
-        "name": "idmc-event-data-for-ind",
+        "name": "ind-idmc-idu-events",
         "notes": "Conflict and disaster population movement (flows) data for India. \n"
         "\n"
         "The **IDU (Internal Displacement Updates) dataset**, provided by "
@@ -97,16 +97,16 @@ class TestIDMC:
                 "vocabulary_id": "4e61d464-4943-4e97-973a-84673c1aaa87",
             },
         ],
-        "title": "India - Internal Displacements Updates (IDU) (event data)",
+        "title": "India - Internal Displacements Updates (IDU)",
     }
     ind_resource = {
-        "description": "idmc event data for India",
+        "description": "India - Internal Displacements Updates (IDU). Contains events data.",
         "format": "csv",
-        "name": "idmc event data for IND",
+        "name": "ind_idmc_idu_events.csv",
     }
     ind_showcase = {
-        "image_url": "https://www.internal-displacement.org/sites/default/files/logo_0.png",
-        "name": "idmc-event-data-for-ind-showcase",
+        "image_url": "https://data.humdata.org/image/2018-09-07-094411.837093idmc-blue.png",
+        "name": "ind-idmc-idu-events-showcase",
         "notes": "Click the image to go to the IDMC summary page for the India dataset",
         "tags": [
             {
@@ -140,8 +140,8 @@ class TestIDMC:
 
     afg_dataset = {
         "groups": [{"name": "afg"}],
-        "name": "idmc-event-data-for-afg",
-        "title": "Afghanistan - Internal Displacements Updates (IDU) (event data)",
+        "name": "afg-idmc-idu-events",
+        "title": "Afghanistan - Internal Displacements Updates (IDU)",
     }
 
     def test_generate_dataset_and_showcase(self, configuration, fixtures):
@@ -165,7 +165,7 @@ class TestIDMC:
                 assert dataset == self.ind_dataset
                 resources = dataset.get_resources()
                 assert resources[0] == self.ind_resource
-                file = "event_data_IND.csv"
+                file = "ind_idmc_idu_events.csv"
                 assert_files_same(join(fixtures, file), join(folder, file))
                 assert showcase == self.ind_showcase
 
